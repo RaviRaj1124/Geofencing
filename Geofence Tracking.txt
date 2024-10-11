@@ -1,0 +1,63 @@
+//custom code for enabling check in button using Geofencing
+
+
+
+import 'dart:convert';
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import '/flutter_flow/lat_lng.dart';
+import '/flutter_flow/place.dart';
+import '/flutter_flow/uploaded_file.dart';
+import '/flutter_flow/custom_functions.dart';
+import '/backend/schema/structs/index.dart';
+
+bool isUserInGeofencing1(
+  LatLng userLocation,
+  LatLng geofenceLocation,
+  double radiusMeters,
+) {
+  /// MODIFY CODE ONLY BELOW THIS LINE
+
+  const int earthRadius = 6371000; // in meters
+
+  // Extract latitude and longitude as double
+  double userLat = userLocation.latitude;
+  double userLong = userLocation.longitude;
+  double geofenceLat = geofenceLocation.latitude;
+  double geofenceLong = geofenceLocation.longitude;
+
+  // Convert degrees to radians
+  double dLat = (geofenceLat - userLat) * (math.pi / 180.0);
+  double dLong = (geofenceLong - userLong) * (math.pi / 180.0);
+
+  double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+      math.cos(userLat * (math.pi / 180.0)) *
+          math.cos(geofenceLat * (math.pi / 180.0)) *
+          math.sin(dLong / 2) *
+          math.sin(dLong / 2);
+
+  double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+
+  double distance = earthRadius * c;
+
+  // Check if distance is within the geofence radius
+  return distance <= radiusMeters;
+
+  /// MODIFY CODE ONLY ABOVE THIS LINE
+}
+
+
+
+
+//return type -> Boolean
+//parameters ->
+//1)(LatLng) userLocation,
+//2)(LatLng) geofenceLocation,
+//3)(Double) radiusMeters,
+
+
+
